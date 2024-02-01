@@ -2,11 +2,62 @@
 //   title: 'Sign In - Instanalytics',
 //   description: 'Page description',
 // }
-
+// @ts-ignore
+"use client";
+import React, {useEffect, useState} from "react";
+import {signIn, useSession, SessionProvider} from "next-auth/react";
 import Link from 'next/link'
+import {useRouter} from "next/navigation";
+import AuthProvider from "../../utils/SessionProvider";
 
 export default function SignIn() {
+
+  const [error, setError] = useState("");
+  const router = useRouter();
+  const session = useSession();
+ useEffect(()=>{
+   if(session?.status === "authenticated") {
+     console.log("success");
+     router.replace("/dashboard");
+   }
+ }, [session, router])
+  const isValidEmail= (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
+  }
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    const email = e.target[0].value;
+    const password = e.target[1].value;
+  
+    if (!isValidEmail(email)) {
+      setError('Please enter a valid email address');
+      return;
+    }
+  
+    if (!password || password.length < 5) {
+      setError('Please enter a valid password');
+      return;
+    }
+  
+    const res = await signIn("credentials", {
+      redirect: false,
+      email,
+      password
+    });
+  
+    if (res?.error) {
+      console.log("error", res.error);
+      setError("Invalid email or password");
+    } else {
+      setError("");
+      router.replace("/dashboard"); // Manually navigate to the dashboard upon successful login
+    }
+  };
+  
+  // @ts-ignore
   return (
+      <AuthProvider>
     <section className="relative">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="pt-32 pb-12 md:pt-40 md:pb-20">
@@ -63,6 +114,7 @@ export default function SignIn() {
               <div className="flex flex-wrap -mx-3 mt-6">
                 <div className="w-full px-3">
                   <button className="btn text-white bg-purple-600 hover:bg-purple-700 w-full">Sign in</button>
+                  <p className="text-red-600 text-[16px] mb-4"> {error && error}</p>
                 </div>
               </div>
             </form>
@@ -74,5 +126,6 @@ export default function SignIn() {
         </div>
       </div>
     </section>
+      </AuthProvider>
   )
 }
