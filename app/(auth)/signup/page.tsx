@@ -1,11 +1,56 @@
-export const metadata = {
-  title: 'Sign Up - Open PRO',
-  description: 'Page description',
-}
+'use client'
 
+import React, { useState } from "react";
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 export default function SignUp() {
+  const [error, setError] = useState("");
+  const router = useRouter();
+  const isValidEmail= (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
+  }
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    const name = e.target[0].value;
+    const email = e.target[1].value;
+    const password = e.target[2].value;
+
+    if(!isValidEmail(email)) {
+      setError('Please enter a valid email address');
+      return;
+    }
+
+    if(!password || password.length < 5) {
+      setError('Please enter a valid password');
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/register', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            name,
+            email,
+            password,
+        }),
+      })
+      if(res.status===400){
+        setError("User already exists")
+      }
+      if(res.status===200){
+        router.push('/signin')
+      }
+    } catch(error) {
+      setError("Error! Try again.")
+      console.log(error);
+    }
+  }
+
   return (
     <section className="relative">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
@@ -13,7 +58,7 @@ export default function SignUp() {
 
           {/* Page header */}
           <div className="max-w-3xl mx-auto text-center pb-12 md:pb-20">
-            <h1 className="h1">Welcome. We exist to make entrepreneurship easier.</h1>
+            <h1 className="h1">Welcome. We exist to make data analysis easier.</h1>
           </div>
 
           {/* Form */}
@@ -36,7 +81,7 @@ export default function SignUp() {
               <div className="text-gray-400">Or, register with your email</div>
               <div className="border-t border-gray-700 border-dotted grow ml-3" aria-hidden="true"></div>
             </div>
-            <form>
+            <form onSubmit={handleSubmit}>
               <div className="flex flex-wrap -mx-3 mb-4">
                 <div className="w-full px-3">
                   <label className="block text-gray-300 text-sm font-medium mb-1" htmlFor="full-name">Full Name <span className="text-red-600">*</span></label>
@@ -45,14 +90,8 @@ export default function SignUp() {
               </div>
               <div className="flex flex-wrap -mx-3 mb-4">
                 <div className="w-full px-3">
-                  <label className="block text-gray-300 text-sm font-medium mb-1" htmlFor="company-name">Company Name <span className="text-red-600">*</span></label>
-                  <input id="company-name" type="text" className="form-input w-full text-gray-300" placeholder="Your company or app name" required />
-                </div>
-              </div>
-              <div className="flex flex-wrap -mx-3 mb-4">
-                <div className="w-full px-3">
-                  <label className="block text-gray-300 text-sm font-medium mb-1" htmlFor="email">Work Email <span className="text-red-600">*</span></label>
-                  <input id="email" type="email" className="form-input w-full text-gray-300" placeholder="you@yourcompany.com" required />
+                  <label className="block text-gray-300 text-sm font-medium mb-1" htmlFor="email">Email <span className="text-red-600">*</span></label>
+                  <input id="email" type="email" className="form-input w-full text-gray-300" placeholder="you@email.com" required />
                 </div>
               </div>
               <div className="flex flex-wrap -mx-3 mb-4">
@@ -61,17 +100,15 @@ export default function SignUp() {
                   <input id="password" type="password" className="form-input w-full text-gray-300" placeholder="Password (at least 10 characters)" required />
                 </div>
               </div>
-              <div className="text-sm text-gray-500 text-center">
-                I agree to be contacted by Open PRO about this offer as per the Open PRO <Link href="#" className="underline text-gray-400 hover:text-gray-200 hover:no-underline transition duration-150 ease-in-out">Privacy Policy</Link>.
-              </div>
               <div className="flex flex-wrap -mx-3 mt-6">
                 <div className="w-full px-3">
                   <button className="btn text-white bg-purple-600 hover:bg-purple-700 w-full">Sign up</button>
                 </div>
               </div>
+              <p className={`text-red-600 text-sm mt-4 ${error ? '' : 'hidden'}`}>{error}</p>
             </form>
             <div className="text-gray-400 text-center mt-6">
-              Already using Open PRO? <Link href="/signin" className="text-purple-600 hover:text-gray-200 transition duration-150 ease-in-out">Sign in</Link>
+              Already using Instanalytics? <Link href="/signin" className="text-purple-600 hover:text-gray-200 transition duration-150 ease-in-out">Sign in</Link>
             </div>
           </div>
 
