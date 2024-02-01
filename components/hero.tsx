@@ -26,7 +26,6 @@ export default function Hero() {
             <h1 className="h1 mb-4" data-aos="fade-up"><span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-teal-400">Instanalytics</span></h1>
             <p className="text-xl text-gray-400 mb-8" data-aos="fade-up" data-aos-delay="200">Unlock the power of your data effortlessly with our intuitive, AI-driven data analysis platform.</p>
             <div className="max-w-xs mx-auto sm:max-w-none sm:flex sm:justify-center">
-              {/*Uppy.io Integration*/}
               <div data-aos="fade-up" data-aos-delay="400">
                 {/*<a className="btn text-white bg-purple-600 hover:bg-purple-700 w-full mb-4 sm:w-auto sm:mb-0" href="#0">Upload</a>*/}
                 {/* import button from dropzone.tsx  */}
