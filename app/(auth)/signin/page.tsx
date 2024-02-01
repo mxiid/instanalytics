@@ -18,7 +18,7 @@ export default function SignIn() {
  useEffect(()=>{
    if(session?.status === "authenticated") {
      console.log("success");
-     router.replace("/dashboard");
+     router.replace("/signup");
    }
  }, [session, router])
   const isValidEmail= (email: string) => {
@@ -29,29 +29,29 @@ export default function SignIn() {
     e.preventDefault();
     const email = e.target[0].value;
     const password = e.target[1].value;
-  
+
     if (!isValidEmail(email)) {
       setError('Please enter a valid email address');
       return;
     }
-  
+
     if (!password || password.length < 5) {
       setError('Please enter a valid password');
       return;
     }
-  
+
     const res = await signIn("credentials", {
       redirect: false,
       email,
       password
     });
-  
+
     if (res?.error) {
       console.log("error", res.error);
       setError("Invalid email or password");
     } else {
       setError("");
-      router.replace("/dashboard"); // Manually navigate to the dashboard upon successful login
+      router.replace("/signup"); // Manually navigate to the dashboard upon successful login
     }
   };
   
