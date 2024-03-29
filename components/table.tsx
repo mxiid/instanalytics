@@ -14,8 +14,7 @@ const CsvTable = ({ fileName }: { fileName: string }) => { // Accepting fileName
     const [rowData, setRowData] = useState<CsvRow[]>([]);
 
     useEffect(() => {
-        const accessKeyId = "AKIA6MVDKRIKSUZIRNW6";
-        const secretAccessKey = "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";
+        
 
         if (!accessKeyId || !secretAccessKey) {
             console.error('AWS credentials are not provided.');
